@@ -24,6 +24,7 @@
 
 #include <fx.h>
 #include <pthread.h>
+#include <pcap.h>
 
 typedef struct pcap pcap_t;
 struct pcap_pkthdr;

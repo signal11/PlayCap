@@ -97,7 +97,7 @@ static void *thread_function(void *ptr)
 
 
 PlaybackWindow::PlaybackWindow(FXApp *app, FXString filename)
-	: FXMainWindow(app, "Playback", NULL/*icon*/, NULL/*icon*/, DECOR_CLOSE|DECOR_TITLE|DECOR_BORDER, 200,200,250,0 )
+	: FXMainWindow(app, "PlayCap", NULL/*icon*/, NULL/*icon*/, DECOR_CLOSE|DECOR_TITLE|DECOR_BORDER, 200,200,250,0 )
 {
 	/* Initialize class members */
 	next_packet_data   = NULL;

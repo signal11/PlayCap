@@ -26,20 +26,20 @@ project(PlayCapProject)
 IF(WIN32)
 
    # FOX-Toolkit
-   SET(FOX_INCLUDE "../fox" CACHE PATH "Path to FOX Include Path")
-   SET(FOX_LIBRARY "fox-1.6.lib" CACHE FILEPATH "FOX Library")
+   SET(FOX_INCLUDE "../PlayCap-Externals/fox/include" CACHE PATH "Path to FOX Include Path")
+   SET(FOX_LIBRARY "../PlayCap-Externals/fox/lib/fox-1.6" CACHE FILEPATH "FOX Library")
 
    # PThreads-Win32
-   SET(PTHREADS_WIN32_INCLUDE "../pthreads" CACHE PATH "Path to pthread-win32 includes" )
-   SET(PTHREADS_WIN32_LIBRARY "pthreadVC2.lib" CACHE FILEPATH "Pthread-Win32 Library")
+   SET(PTHREADS_WIN32_INCLUDE "../PlayCap-Externals/pthreads-win32/include" CACHE PATH "Path to pthread-win32 includes" )
+   SET(PTHREADS_WIN32_LIBRARY "../PlayCap-Externals/pthreads-win32/lib/pthreadVC2" CACHE FILEPATH "Pthread-Win32 Library")
 
    # WinPcap
-   SET(WINPCAP_INCLUDE "../winpcap" CACHE PATH "Path to WinPcap includes" )
-   SET(WINPCAP_LIBRARY "wpcap.lib" CACHE FILEPATH "WinPcap Library")
+   SET(WINPCAP_INCLUDE "../PlayCap-Externals/WpdPack/Include" CACHE PATH "Path to WinPcap includes" )
+   SET(WINPCAP_LIBRARY "../PlayCap-Externals/WpdPack/Lib/wpcap" CACHE FILEPATH "WinPcap Library")
 
    # LibPNG
-   SET(LIBPNG_INCLUDE "../libpng" CACHE PATH "Path to libPNG includes" )
-   SET(LIBPNG_LIBRARY "libpng.lib" CACHE FILEPATH "LibPNG Library")
+   SET(LIBPNG_INCLUDE "../PlayCap-Externals/libpng/include" CACHE PATH "Path to libPNG includes" )
+   SET(LIBPNG_LIBRARY "../PlayCap-Externals/libpng/lib/libpng" CACHE FILEPATH "LibPNG Library")
 
 
 ELSE(WIN32)

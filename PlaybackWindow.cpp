@@ -32,6 +32,7 @@
 #include "tango/media-skip-backward.png.h"
 
 #include "FXPNGIcon.h"
+#include "fxver.h"
 
 #ifdef WIN32
 	#include <mmsystem.h>
@@ -374,8 +375,14 @@ PlaybackWindow::onTimeout(FXObject *, FXSelector, void*)
 	/* Call us again if we're still running, otherwise
 	 * get into the STOP state. */
 	if (run_thread) {
+		// FOX 1.7 changes the timeouts to all be nanoseconds.
+		// Fox 1.6 had all timeouts as milliseconds.
+		int timeout_scalar = 1;
+		#if (FOX_MINOR >= 7)
+			timeout_scalar = 1000*1000;
+		#endif
 		getApp()->addTimeout(this, ID_CAPTURE_TIMEOUT,
-			5 * 1000 * 1000 /*5Million = 5ms*/);
+			5 * timeout_scalar /*5ms*/);
 	}
 	else {
 		/* Thread is not running because the playback has finised.
@@ -460,7 +467,13 @@ PlaybackWindow::onStart(FXObject *, FXSelector, void*)
 					elapsed_time = 0.0;
 					pthread_create(&thread, NULL, &thread_function, this);
 					// Start the periodic update timer.
-					getApp()->addTimeout(this, ID_CAPTURE_TIMEOUT, 1*1000*1000  /*1Mil = 1ms*/);
+					// FOX 1.7 changes the timeouts to all be nanoseconds.
+					// Fox 1.6 had all timeouts as milliseconds.
+					int timeout_scalar = 1;
+					#if (FOX_MINOR >= 7)
+						timeout_scalar = 1000*1000;
+					#endif
+					getApp()->addTimeout(this, ID_CAPTURE_TIMEOUT, 1 * timeout_scalar  /*1ms*/);
 				}
 				else {
 					FXMessageBox::information(this, MBOX_OK, "Networking Error", "Unable to get a write handle for the playback.");

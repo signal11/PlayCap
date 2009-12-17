@@ -18,6 +18,9 @@
 #############################################################################
 
 cmake_minimum_required(VERSION 2.4)
+if(COMMAND cmake_policy)
+   cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
 project(PlayCapProject)
 
@@ -26,20 +29,20 @@ project(PlayCapProject)
 IF(WIN32)
 
    # FOX-Toolkit
-   SET(FOX_INCLUDE "../PlayCap-Externals/fox/include" CACHE PATH "Path to FOX Include Path")
-   SET(FOX_LIBRARY "../PlayCap-Externals/fox/lib/fox-1.6" CACHE FILEPATH "FOX Library")
+   SET(FOX_INCLUDE "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/fox/include" CACHE PATH "Path to FOX Include Path")
+   SET(FOX_LIBRARY "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/fox/lib/fox-1.6.lib" CACHE FILEPATH "FOX Library")
 
    # PThreads-Win32
-   SET(PTHREADS_WIN32_INCLUDE "../PlayCap-Externals/pthreads-win32/include" CACHE PATH "Path to pthread-win32 includes" )
-   SET(PTHREADS_WIN32_LIBRARY "../PlayCap-Externals/pthreads-win32/lib/pthreadVC2" CACHE FILEPATH "Pthread-Win32 Library")
+   SET(PTHREADS_WIN32_INCLUDE "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/pthreads-win32/include" CACHE PATH "Path to pthread-win32 includes" )
+   SET(PTHREADS_WIN32_LIBRARY "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/pthreads-win32/lib/pthreadVC2.lib" CACHE FILEPATH "Pthread-Win32 Library")
 
    # WinPcap
-   SET(WINPCAP_INCLUDE "../PlayCap-Externals/WpdPack/Include" CACHE PATH "Path to WinPcap includes" )
-   SET(WINPCAP_LIBRARY "../PlayCap-Externals/WpdPack/Lib/wpcap" CACHE FILEPATH "WinPcap Library")
+   SET(WINPCAP_INCLUDE "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/WpdPack/Include" CACHE PATH "Path to WinPcap includes" )
+   SET(WINPCAP_LIBRARY "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/WpdPack/Lib/wpcap.lib" CACHE FILEPATH "WinPcap Library")
 
    # LibPNG
-   SET(LIBPNG_INCLUDE "../PlayCap-Externals/libpng/include" CACHE PATH "Path to libPNG includes" )
-   SET(LIBPNG_LIBRARY "../PlayCap-Externals/libpng/lib/libpng" CACHE FILEPATH "LibPNG Library")
+   SET(LIBPNG_INCLUDE "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/libpng/include" CACHE PATH "Path to libPNG includes" )
+   SET(LIBPNG_LIBRARY "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/libpng/lib/libpng.lib" CACHE FILEPATH "LibPNG Library")
 
 
 ELSE(WIN32)

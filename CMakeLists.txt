@@ -19,7 +19,7 @@
 
 cmake_minimum_required(VERSION 2.4)
 
-project(PlaybackProject)
+project(PlayCapProject)
 
 #### Find Fox-Toolkit ####
 
@@ -78,7 +78,7 @@ include_directories( ${FOX_INCLUDE}
                      ${PTHREADS_WIN32_INCLUDE}
                      ${WINPCAP_INCLUDE} )
 
-add_executable(playback WIN32
+add_executable(playcap WIN32
 	AboutWindow.cpp
 	InterfaceWindow.cpp
 	main.cpp
@@ -87,10 +87,10 @@ add_executable(playback WIN32
 
 if (WIN32)
    # Make it start in main() on Windows.
-   Set_Target_Properties(playback  PROPERTIES
+   Set_Target_Properties(playcap  PROPERTIES
       LINK_FLAGS /ENTRY:"mainCRTStartup")
 endif (WIN32)
 
 
-target_link_libraries(playback ${FOX_LIBRARIES} ${libs})
+target_link_libraries(playcap ${FOX_LIBRARIES} ${libs})
 

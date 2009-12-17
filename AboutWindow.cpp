@@ -52,7 +52,7 @@ AboutWindow::AboutWindow(FXWindow *parent)
 	new FXWindow(vf);
 
 	const char *text = 
-		"This is the libpcap playback tool, version 0.9\n"
+		"This is PlayCap, the libpcap playback tool, version 0.9\n"
 		"Copyright 2006-2009 Alan Ott, Signal 11 Software, LLC\n"
 		"Licensed under the GNU General Public License, version 3\n"
 		"www.signal11.us\n"

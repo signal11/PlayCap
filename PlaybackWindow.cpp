@@ -4,6 +4,7 @@
  10-1-2009
 **********************************/
 
+#include <stdio.h>
 #include <pcap.h>
 #include <pthread.h>
 
@@ -19,7 +20,7 @@
 #include "FXPNGIcon.h"
 
 #ifdef WIN32
-	#include <winmm.h>
+	#include <mmsystem.h>
 #else
 	// Header files for send() on UNIX platforms
 	#include <sys/types.h>
@@ -173,6 +174,9 @@ PlaybackWindow::~PlaybackWindow()
 	if (state == PLAYING || state == PAUSED)
 		onStop(NULL,0,NULL);
 	free(next_packet_header);
+	
+	// FOX menus must be deleted explicitly.
+	delete filemenu;
 }
 
 FXString

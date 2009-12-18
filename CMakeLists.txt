@@ -108,23 +108,25 @@ endif (WIN32)
 
 target_link_libraries(playcap ${FOX_LIBRARIES} ${libs})
 
-#### CPack ####
-set(CPACK_PACKAGE_NAME, "PlayCap")
-set(CPACK_PACKAGE_VENDOR "Signal 11 Software")
-set(CPACK_PACKAGE_VERSION, "0.7.0")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libfox-1.6")
-set(CPACK_PACKAGE_CONTACT, "Signal 11 Software")
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER, "Alan Ott, Signal 11 Software, alan@signal11.us")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY, "Replays tcpdump, Wireshark, and libpcap capture files")
-set(CPACK_DEBIAN_PACKAGE_SECTION, "")
-set(CPACK_DEBIAN_PACKAGE_RECOMMENDS, "wireshark")
-set(DEBIAN_PACKAGE_BUILDS_DEPENDS, "libFOX-1.6-dev, libpcap-dev, libpng-dev")
-
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER, "Alan Ott")
-INCLUDE(CPack)
-
 install (
    TARGETS playcap
    RUNTIME DESTINATION bin
    )
+
+
+#### CPack ####
+set(CPACK_PACKAGE_NAME "PlayCap")
+set(CPACK_PACKAGE_VENDOR "Signal 11 Software")
+set(CPACK_PACKAGE_VERSION "0.7.0")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libFOX-1.6-0")
+set(CPACK_PACKAGE_CONTACT "Signal 11 Software")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Alan Ott, Signal 11 Software, alan@signal11.us")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Replays tcpdump, Wireshark, and libpcap capture files")
+set(CPACK_DEBIAN_PACKAGE_SECTION "")
+set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "wireshark")
+set(DEBIAN_PACKAGE_BUILDS_DEPENDS "libFOX-1.6-dev, libpcap-dev, libpng-dev")
+
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Alan Ott")
+INCLUDE(CPack)
+
 

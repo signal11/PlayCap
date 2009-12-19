@@ -133,7 +133,7 @@ if (WIN32)
    )
    install (
       FILES
-              ${DLL_PATH}/WinPcap_4_0_1.exe
+              ${DLL_PATH}/WinPcap_4_1_1.exe
               DESTINATION .
    )
 endif(WIN32)
@@ -155,14 +155,14 @@ SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING.txt")
 if (WIN32 AND NOT UNIX)
   #SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
   SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\playcap.exe")
-  SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} PlayCap")
+  SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}\\\\PlayCap")
   SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.signal11.us")
   SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.signal11.us")
   SET(CPACK_NSIS_CONTACT "alan@signal11.us")
   SET(CPACK_NSIS_MODIFY_PATH ON)
   SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
-        "ExecWait \\\"$INSTDIR\\\\WinPcap_4_0_1.exe\\\"
-         Delete   \\\"$INSTDIR\\\\WinPcap_4_0_1.exe\\\" ")
+        "ExecWait \\\"$INSTDIR\\\\WinPcap_4_1_1.exe\\\"
+         Delete   \\\"$INSTDIR\\\\WinPcap_4_1_1.exe\\\" ")
 
 else(WIN32 AND NOT UNIX)
   SET(CPACK_STRIP_FILES "bin/playcap")

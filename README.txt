@@ -21,7 +21,7 @@ of the box using CMake.
 5. Open the newly created Visual Studio project (.SLN) file in Visual Studio,
    select the build configuration (DEBUG or RELEASE) and press the Build button.
 6. Copy the DLLs from the PlayCap-Externals directory to an appropriate folder.
-7. Install WinPcap_4_0_1.exe from the Playcap-Externals folder.
+7. Install WinPcap_4_1_1.exe from the Playcap-Externals folder.
 8. Run the newly-built playcap.exe
 
 

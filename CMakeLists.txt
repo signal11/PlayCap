@@ -44,6 +44,9 @@ IF(WIN32)
    SET(LIBPNG_INCLUDE "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/libpng/include" CACHE PATH "Path to libPNG includes" )
    SET(LIBPNG_LIBRARY "${CMAKE_SOURCE_DIR}/../PlayCap-Externals/libpng/lib/libpng.lib" CACHE FILEPATH "LibPNG Library")
 
+   # DLLs (For Installer)
+   SET(DLL_PATH "${CMAKE_SOURCE_DIR}/../PlayCap-Externals" CACHE PATH "Path to DLLs to Install" )
+
 
 ELSE(WIN32)
 
@@ -85,6 +88,16 @@ else (WIN32)
 endif (WIN32)
 
 
+set(SOURCES
+    AboutWindow.cpp
+    InterfaceWindow.cpp
+    main.cpp
+    PlaybackWindow.cpp)
+
+if (WIN32)
+   list(APPEND SOURCES PlayCap.rc)
+endif(WIN32)
+
 
 add_definitions(${CMAKE_FOX_CXX_FLAGS})
 
@@ -93,10 +106,7 @@ include_directories( ${FOX_INCLUDE}
                      ${WINPCAP_INCLUDE} )
 
 add_executable(playcap WIN32
-	AboutWindow.cpp
-	InterfaceWindow.cpp
-	main.cpp
-	PlaybackWindow.cpp
+               ${SOURCES}	
 )
 
 if (WIN32)
@@ -113,11 +123,21 @@ install (
    RUNTIME DESTINATION bin
    )
 
+if (WIN32) 
+   install (
+      FILES
+              ${DLL_PATH}/libpng13.dll
+              ${DLL_PATH}/zlib1.dll
+              ${DLL_PATH}/pthreadVC2.dll
+              DESTINATION bin
+   )
+endif(WIN32)
+
 
 #### CPack ####
 set(CPACK_PACKAGE_NAME "PlayCap")
 set(CPACK_PACKAGE_VENDOR "Signal 11 Software")
-set(CPACK_PACKAGE_VERSION "0.7.0")
+set(CPACK_PACKAGE_VERSION "0.1.0")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libFOX-1.6-0")
 set(CPACK_PACKAGE_CONTACT "Signal 11 Software")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Alan Ott, Signal 11 Software, alan@signal11.us")
@@ -125,8 +145,22 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Replays tcpdump, Wireshark, and libpcap c
 set(CPACK_DEBIAN_PACKAGE_SECTION "")
 set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "wireshark")
 set(DEBIAN_PACKAGE_BUILDS_DEPENDS "libFOX-1.6-dev, libpcap-dev, libpng-dev")
-
+SET(CPACK_PACKAGE_EXECUTABLES "PlayCap" "PlayCap")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING.txt")
+if (WIN32 AND NOT UNIX)
+  #SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+  SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\playcap.exe")
+  SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} PlayCap")
+  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.signal11.us")
+  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.signal11.us")
+  SET(CPACK_NSIS_CONTACT "alan@signal11.us")
+  SET(CPACK_NSIS_MODIFY_PATH ON)
+else(WIN32 AND NOT UNIX)
+  SET(CPACK_STRIP_FILES "bin/playcap")
+  SET(CPACK_SOURCE_STRIP_FILES "")
+endif(WIN32 AND NOT UNIX)
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Alan Ott")
+
 INCLUDE(CPack)
 
 

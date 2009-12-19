@@ -142,7 +142,7 @@ endif(WIN32)
 #### CPack ####
 set(CPACK_PACKAGE_NAME "PlayCap")
 set(CPACK_PACKAGE_VENDOR "Signal 11 Software")
-set(CPACK_PACKAGE_VERSION "0.1.0")
+set(CPACK_PACKAGE_VERSION "0.1.1")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libFOX-1.6-0")
 set(CPACK_PACKAGE_CONTACT "Signal 11 Software")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Alan Ott, Signal 11 Software, alan@signal11.us")

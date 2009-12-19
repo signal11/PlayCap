@@ -503,7 +503,7 @@ PlaybackWindow::onStart(FXObject *, FXSelector, void*)
 		const char *privs = "root user";
 #endif
 		FXString s;
-		s.format("There was an error trying to capture network packets.\nThis most likely means that you do not have permission to open raw sockets.\nEnsure that you have %s privileges and try again.\n\nError: %s", privs, errbuf);
+		s.format("There was an error trying to open the network device.\nThis most likely means that you do not have permission to open raw sockets.\nEnsure that you have %s privileges and try again.\n\nError: %s", privs, errbuf);
 		FXMessageBox::error(this, MBOX_OK, "Capture Error", "%s", s.text());
 	}
 	

@@ -131,6 +131,11 @@ if (WIN32)
               ${DLL_PATH}/pthreadVC2.dll
               DESTINATION bin
    )
+   install (
+      FILES
+              ${DLL_PATH}/WinPcap_4_0_1.exe
+              DESTINATION .
+   )
 endif(WIN32)
 
 
@@ -155,6 +160,10 @@ if (WIN32 AND NOT UNIX)
   SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.signal11.us")
   SET(CPACK_NSIS_CONTACT "alan@signal11.us")
   SET(CPACK_NSIS_MODIFY_PATH ON)
+  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+        "ExecWait \\\"$INSTDIR\\\\WinPcap_4_0_1.exe\\\"
+         Delete   \\\"$INSTDIR\\\\WinPcap_4_0_1.exe\\\" ")
+
 else(WIN32 AND NOT UNIX)
   SET(CPACK_STRIP_FILES "bin/playcap")
   SET(CPACK_SOURCE_STRIP_FILES "")

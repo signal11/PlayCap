@@ -504,7 +504,7 @@ PlaybackWindow::onStart(FXObject *, FXSelector, void*)
 #endif
 		FXString s;
 		s.format("There was an error trying to capture network packets.\nThis most likely means that you do not have permission to open raw sockets.\nEnsure that you have %s privileges and try again.\n\nError: %s", privs, errbuf);
-		FXMessageBox::error(this, MBOX_OK, "Capture Error", s.text());
+		FXMessageBox::error(this, MBOX_OK, "Capture Error", "%s", s.text());
 	}
 	
 	pcap_freealldevs(devs);

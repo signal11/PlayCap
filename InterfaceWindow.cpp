@@ -57,7 +57,7 @@ InterfaceWindow::InterfaceWindow(FXComposite *parent, pcap_if_t *ifaces, FXStrin
 	FXPNGIcon *capture_icon_48 = new FXPNGIcon(getApp(), networktransmitreceive48);
 
 	FXLabel *label = new FXLabel(this, title, capture_icon_48);
-	label->setFont(new FXFont(getApp(), "Arial", 16));
+	label->setFont(new FXFont(getApp(), "Helvetica", 14, FXFont::Bold));
 
 
 	new FXWindow(new FXVerticalFrame(this));

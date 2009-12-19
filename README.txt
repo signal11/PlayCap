@@ -1,3 +1,40 @@
+This is PlayCap, the tool for playing back Wireshark, tcpdump, and libpcap captures.
+In its early versions, only straight playback (full speed) is supported. In future
+versions, variable speed playback may be added if it is desired. PlayCap has a very
+simple user interface, designed to be completely intuitive to anyone using it.
+
+Platforms Supported
+--------------------
+PlayCap has currently been tested on Windows XP and Ubuntu 9.10, with more testing
+planned in the near future.
+
+Installation
+-------------
+On Linux, PlayCap currently must be built from source. CMake (www.cmake.org) is
+used instead of autotools to configure the build.
+
+To install the 3rd party dependencies on an Ubuntu system, GCC must first be
+installed. If it has not already been installed, run:
+  sudo apt-get install build-essential
+Then run the following:
+  sudo apt-get install libfox-dev libpcap-dev cmake
+
+To build the software, run the following commands from inside the source
+distribution:
+  cmake .
+  make
+  sudo make install
+
+Run the software by running the following from the command line:
+  playcap
+
+On Windows, the easiest method of installation is to run the installer located
+on the download page on the github.com website. The installer will prompt to
+run the WinPcap installer. WinPcap is required for PlayCap to run on Windows.
+WinPcap is also installed by Wireshark (and other programs), so it is likely
+to already be installed on your computer if you use one of these tools.
+
+
 Setting up a Windows computer for build of PlayCap
 ---------------------------------------------------
 Windows builds are currently only supported using Visual Studio 2008. Other compilers

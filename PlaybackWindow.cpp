@@ -30,6 +30,8 @@
 #include "tango/media-playback-stop.png.h"
 #include "tango/media-playback-pause.png.h"
 #include "tango/media-skip-backward.png.h"
+#include "signal11icon.h"
+#include "signal11-smallicon.h"
 
 #include "FXPNGIcon.h"
 #include "fxver.h"
@@ -116,6 +118,12 @@ PlaybackWindow::PlaybackWindow(FXApp *app, FXString filename)
 	timeBeginPeriod(1);
 #endif
 
+	/* Window Icons, large and small */
+	mainWindowIcon = new FXICOIcon(getApp(), Signal11, FXRGB(192,192,192),0,16,16);
+	setIcon(mainWindowIcon);
+	mainWindowMiniIcon = new FXICOIcon(getApp(), Signal11small, FXRGB(192,192,192),0,16,16);
+	setMiniIcon(mainWindowMiniIcon);
+
 	/* Create Icons */
 	startIcon = new FXPNGIcon(getApp(), mediaplaybackstart);
 	startIcon->blend(getBackColor());
@@ -175,7 +183,7 @@ PlaybackWindow::PlaybackWindow(FXApp *app, FXString filename)
 		PlaybackWindow::closeIcon = new FXPNGIcon(getApp(), crossorig);
 		PlaybackWindow::closeIcon->blend(getBackColor());
 	}
-	new FXButton(this, "Close", closeIcon, this, ID_CLOSE, BUTTON_NORMAL|LAYOUT_RIGHT);
+	new FXButton(vf, "Close", closeIcon, this, ID_CLOSE, BUTTON_NORMAL|LAYOUT_RIGHT);
 
 
 	// Set the packets processed readout.

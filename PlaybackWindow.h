@@ -56,6 +56,9 @@ private:
 		PAUSED,
 	};
 	
+	FXIcon *mainWindowIcon;
+	FXIcon *mainWindowMiniIcon;
+
 	static FXIcon *closeIcon;
 	static FXIcon *startIcon;
 	static FXIcon *stopIcon;

@@ -5,7 +5,7 @@ simple user interface, designed to be completely intuitive to anyone using it.
 
 Platforms Supported
 --------------------
-PlayCap has currently been tested on Windows XP and Ubuntu 8.04, with more testing
+PlayCap has currently been tested on Windows XP and Ubuntu 9.10, with more testing
 planned in the near future.
 
 Installation
@@ -13,9 +13,11 @@ Installation
 On Linux, PlayCap currently must be built from source. CMake (www.cmake.org) is
 used instead of autotools to configure the build.
 
-To install the 3rd party dependencies on an Ubuntu system, run the following
-commands:
-  sudo apt-get install libfox-dev libpcap-dev
+To install the 3rd party dependencies on an Ubuntu system, GCC must first be
+installed. If it has not already been installed, run:
+  sudo apt-get install build-essential
+Then run the following:
+  sudo apt-get install libfox-dev libpcap-dev cmake
 
 To build the software, run the following commands from inside the source
 distribution:

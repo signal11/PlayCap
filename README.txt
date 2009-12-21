@@ -1,15 +1,19 @@
-This is PlayCap, the tool for playing back Wireshark, tcpdump, and libpcap captures.
-In its early versions, only straight playback (full speed) is supported. In future
-versions, variable speed playback may be added if it is desired. PlayCap has a very
-simple user interface, designed to be completely intuitive to anyone using it.
+This is PlayCap, the tool for playing back Wireshark, tcpdump, and libpcap
+captures.  In its early versions, only straight playback (full speed) is
+supported.  In future versions, variable speed playback may be added if it
+is desired.  PlayCap has a very simple user interface, designed to be
+completely intuitive to anyone using it.
 
 Platforms Supported
 --------------------
-PlayCap has currently been tested on Windows XP and Ubuntu 9.10, with more testing
-planned in the near future.
+PlayCap has currently been tested on Windows XP, Ubuntu 9.10, and Mac OS X
+10.5, with more testing planned in the near future.
 
-Installation
--------------
+Installation / Building from Source
+=====================================
+
+Linux
+------
 On Linux, PlayCap currently must be built from source. CMake (www.cmake.org) is
 used instead of autotools to configure the build.
 
@@ -28,19 +32,37 @@ distribution:
 Run the software by running the following from the command line:
   playcap
 
-On Windows, the easiest method of installation is to run the installer located
-on the download page on the github.com website. The installer will prompt to
-run the WinPcap installer. WinPcap is required for PlayCap to run on Windows.
-WinPcap is also installed by Wireshark (and other programs), so it is likely
-to already be installed on your computer if you use one of these tools.
+Mac OS X
+---------
+On Mac OSX, PlayCap is built from the command line using cmake. To
+prepare a computer for build, first install XCode and Ports, then get the
+dependencies from ports by typing the following:
+  sudo port install fox libpcap cmake
 
+To build the software, run the following commands from inside the source
+distribution:
+  cmake .
+  make
+  sudo make install
 
-Setting up a Windows computer for build of PlayCap
----------------------------------------------------
-Windows builds are currently only supported using Visual Studio 2008. Other compilers
-should work, but will need a re-build of the fox-toolkit library. Building of this
-library is described later in this document. For VS 2008, the build should work out
-of the box using CMake.
+Run the software by running the following from the command line:
+  playcap
+
+Windows
+--------
+Installation: 
+On Windows, the easiest method of installation is to run the installer
+located on the download page on the github.com website.  The installer will
+prompt to run the WinPcap installer.  WinPcap is required for PlayCap to run
+on Windows.  WinPcap is also installed by Wireshark (and other programs), so
+it is likely to already be installed on your computer if you use one of
+these tools.
+
+Setting up a Windows computer for build of PlayCap:
+Windows builds are currently only supported using Visual Studio 2008. Other
+compilers should work, but will need a re-build of the fox-toolkit library. 
+Building of this library is described later in this document.  For VS 2008,
+the build should work out of the box using CMake.
 
 1. Install CMake (downloadable from www.cmake.org)
 2. Download PlayCap-Externals.zip from the main PlayCap download site and
@@ -56,14 +78,16 @@ of the box using CMake.
 4. In CMake, press "Configure" then "Generate". This will generate a Visual
    Studio Project file.
 5. Open the newly created Visual Studio project (.SLN) file in Visual Studio,
-   select the build configuration (DEBUG or RELEASE) and press the Build button.
+   select the build configuration (DEBUG or RELEASE) and press the Build
+   button.
 6. Copy the DLLs from the PlayCap-Externals directory to an appropriate folder.
-7. Install WinPcap_4_1_1.exe from the Playcap-Externals folder.
+7. Install WinPcap_4_1_1.exe from the Playcap-Externals folder (if
+   necessary).
 8. Run the newly-built playcap.exe
 
 
-To Re-build FOX-Toolkit (for example on another compiler):
------------------------------------------------------------
+To Re-build FOX-Toolkit on Windows (for example on another compiler):
+----------------------------------------------------------------------
 1. Open the FOX Project from windows\vcpp\win32.dsw
 2. In the FOX workspace, add HAVE_PNG_H=1 to the preprocessor
    in the DEBUG and RELEASE for projects fox and foxdll (4 times total).

@@ -238,31 +238,14 @@ PlaybackWindow::setPlaybackPacketsProcessed(unsigned int packets)
 bool
 PlaybackWindow::sendPacket(const u_char *data, pcap_pkthdr &hdr)
 {
-	bool error = false;
-
-	// On Windows, use pcap_send(). On Linux (and others) use
-	// the fd handle from libpcap. This is because pcap_send()
-	// on UNIX platforms is a newer feature, and I'd like it to
-	// be as portable to older systems as possible.
-#ifdef WIN32
 	int ret;
+
 	ret = pcap_sendpacket(live_capture, data, hdr.caplen);
 	if (ret < 0) {
-		error = true;
-	}
-#else
-	int ret;
-	ret = send(send_handle, data, hdr.caplen, 0);
-	if (ret < 0) {
-		error = true;
-	}
-#endif
-
-	if (error) {
 		FXMessageBox::information( this, MBOX_OK, "Network Error", "Unable to send data on the network.\n");
 		onStop(NULL,0,NULL);
+		return false;
 	}
-
 	return true;
 }
 

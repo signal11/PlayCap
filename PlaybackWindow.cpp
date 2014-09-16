@@ -427,6 +427,16 @@ PlaybackWindow::onStart(FXObject *, FXSelector sel, void*)
 	pcap_file = pcap_open_offline(filename.text(), errbuf);
 	if (!pcap_file) {
 		FXMessageBox::information( this, MBOX_OK, "File Open Error", "Can't open original file %s for reading.\n", filename.text() );
+
+		// Set the GUI and app state to
+		// the STOPPED state.
+		state = STOPPED;
+		progress->setProgress(0);
+		startButton->enable();
+		stopButton->disable();
+		pauseButton->disable();
+
+		return 1;
 	}
 
 	// Prompt for the interface if one isn't set, or if called from the Play button click.

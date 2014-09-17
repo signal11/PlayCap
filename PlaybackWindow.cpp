@@ -385,6 +385,7 @@ PlaybackWindow::onTimeout(FXObject *, FXSelector sel, void*)
 	}
 	else {
 		if (loop_playback) {
+			onStop(NULL,0,NULL);
 			onStart(NULL, sel, NULL);
 		}
 		else {

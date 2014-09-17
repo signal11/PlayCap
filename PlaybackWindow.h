@@ -25,6 +25,7 @@
 #include <fx.h>
 #include <pthread.h>
 #include <pcap.h>
+#include <string>
 
 typedef struct pcap pcap_t;
 struct pcap_pkthdr;
@@ -40,6 +41,7 @@ public:
 		ID_STOP_BUTTON,
 		ID_PAUSE_BUTTON,
 		ID_REWIND_BUTTON,
+		ID_LOOP_BUTTON,
 		ID_OK_BUTTON,
 		ID_CAPTURE_TIMEOUT,
 
@@ -64,6 +66,7 @@ private:
 	static FXIcon *stopIcon;
 	static FXIcon *pauseIcon;
 	static FXIcon *rewindIcon;
+	static FXIcon *loopIcon;
 
 	FXMenuBar *menubar;
 	FXMenuPane *filemenu;
@@ -72,6 +75,7 @@ private:
 	FXButton       *stopButton;
 	FXButton       *pauseButton;
 	FXButton       *rewindButton;
+	FXToggleButton *loopButton;
 	
 	FXLabel        *elapsedTimeLabel;
 	FXLabel        *slashLabel;
@@ -86,7 +90,9 @@ private:
 	
 	FXString       filename;
 	State          state;  // State is read from the playback thread
+	bool           loop_playback;
 	int            send_handle; // UNIX only.
+	std::string    pcap_if;
 
 	pcap_t         *pcap_file;
 	pcap_t         *live_capture;
@@ -136,6 +142,7 @@ public:
 	long onStop(FXObject *sender, FXSelector sel, void *ptr);
 	long onPause(FXObject *sender, FXSelector sel, void *ptr);
 	long onRewind(FXObject *sender, FXSelector sel, void *ptr);
+	long onLoop(FXObject *sender, FXSelector sel, void *ptr);
 	long onTimer(FXObject *sender, FXSelector sel, void *ptr);
 	long onOk(FXObject *sender, FXSelector sel, void *ptr);
 	long onTimeout(FXObject *sender, FXSelector sel, void *ptr);

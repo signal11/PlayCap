@@ -30,6 +30,7 @@
 #include "tango/media-playback-stop.png.h"
 #include "tango/media-playback-pause.png.h"
 #include "tango/media-skip-backward.png.h"
+#include "tango/view-refresh.png.h"
 #include "signal11icon.h"
 #include "signal11-smallicon.h"
 
@@ -54,6 +55,7 @@ FXDEFMAP(PlaybackWindow) PlaybackWindowMap[] = {
 	FXMAPFUNC( SEL_COMMAND, PlaybackWindow::ID_STOP_BUTTON, PlaybackWindow::onStop ),
 	FXMAPFUNC( SEL_COMMAND, PlaybackWindow::ID_PAUSE_BUTTON, PlaybackWindow::onPause ),
 	FXMAPFUNC( SEL_COMMAND, PlaybackWindow::ID_REWIND_BUTTON, PlaybackWindow::onRewind ),
+	FXMAPFUNC( SEL_COMMAND, PlaybackWindow::ID_LOOP_BUTTON, PlaybackWindow::onLoop ),
 	FXMAPFUNC( SEL_TIMEOUT, PlaybackWindow::ID_CAPTURE_TIMEOUT, PlaybackWindow::onTimeout ),
 	FXMAPFUNC( SEL_COMMAND, PlaybackWindow::ID_OPEN, PlaybackWindow::onOpen ),
 	FXMAPFUNC( SEL_COMMAND, PlaybackWindow::ID_ABOUT, PlaybackWindow::onAbout ),
@@ -67,6 +69,7 @@ FXIcon *PlaybackWindow::startIcon;
 FXIcon *PlaybackWindow::stopIcon;
 FXIcon *PlaybackWindow::pauseIcon;
 FXIcon *PlaybackWindow::rewindIcon;
+FXIcon *PlaybackWindow::loopIcon;
 
 static double tv_to_double(const struct timeval *tv)
 {
@@ -109,7 +112,9 @@ PlaybackWindow::PlaybackWindow(FXApp *app, FXString filename)
 	live_capture = NULL;
 	this->filename = filename;
 	state = STOPPED;
+	loop_playback = false;
 	send_handle = -1;
+	pcap_if = "";
 	total_packets = 0;
 	packets_processed = 0;
 	initialized = false;
@@ -133,6 +138,8 @@ PlaybackWindow::PlaybackWindow(FXApp *app, FXString filename)
 	pauseIcon->blend(getBackColor());
 	rewindIcon= new FXPNGIcon(getApp(), mediaskipbackward);
 	rewindIcon->blend(getBackColor());
+	loopIcon = new FXPNGIcon(getApp(), viewrefresh);
+	loopIcon->blend(getBackColor());
 
 	
 	/* Create Controls */
@@ -160,6 +167,7 @@ PlaybackWindow::PlaybackWindow(FXApp *app, FXString filename)
 	stopButton  = new FXButton(hf, "\tStop", stopIcon, this, ID_STOP_BUTTON);
 	pauseButton = new FXButton(hf, "\tPause", pauseIcon, this, ID_PAUSE_BUTTON);
 	//rewindButton= new FXButton(hf, "\tRewind", rewindIcon, this, ID_PAUSE_BUTTON);
+	loopButton = new FXToggleButton(hf, "\tLoop", "\tLoop", loopIcon, loopIcon, this, ID_LOOP_BUTTON, TOGGLEBUTTON_NORMAL|TOGGLEBUTTON_KEEPSTATE);
 	startButton->disable();
 	stopButton->disable();
 	pauseButton->disable();
@@ -351,7 +359,7 @@ PlaybackWindow::playbackThread()
  * printed in the GUI one frame. This has not been observed.
  */
 long
-PlaybackWindow::onTimeout(FXObject *, FXSelector, void*)
+PlaybackWindow::onTimeout(FXObject *, FXSelector sel, void*)
 {
 	/* Update the progress indicator */
 	progress->setProgress(packets_processed);
@@ -376,16 +384,22 @@ PlaybackWindow::onTimeout(FXObject *, FXSelector, void*)
 			5 * timeout_scalar /*5ms*/);
 	}
 	else {
-		/* Thread is not running because the playback has finised.
-		   onStop() will reset the player. */
-		onStop(NULL,0,NULL);
+		if (loop_playback) {
+			onStop(NULL,0,NULL);
+			onStart(NULL, sel, NULL);
+		}
+		else {
+			/* Thread is not running because the playback has finised.
+			   onStop() will reset the player. */
+			onStop(NULL,0,NULL);
+		}
 	}
 	
 	return 1;
 }
 
 long
-PlaybackWindow::onStart(FXObject *, FXSelector, void*)
+PlaybackWindow::onStart(FXObject *, FXSelector sel, void*)
 {
 	// If we're PAUSED, then just set the state back to playing.
 	// There's no need to re-open the socket or anything.
@@ -414,83 +428,101 @@ PlaybackWindow::onStart(FXObject *, FXSelector, void*)
 	pcap_file = pcap_open_offline(filename.text(), errbuf);
 	if (!pcap_file) {
 		FXMessageBox::information( this, MBOX_OK, "File Open Error", "Can't open original file %s for reading.\n", filename.text() );
+
+		// Set the GUI and app state to
+		// the STOPPED state.
+		state = STOPPED;
+		progress->setProgress(0);
+		startButton->enable();
+		stopButton->disable();
+		pauseButton->disable();
+
+		return 1;
 	}
 
-	// Popup window with list of interfaces in it.
-	pcap_findalldevs(&devs, errbuf);
-	if (devs) {
-		// Show the interface Window.
-		FXDialogBox *dlg = new FXDialogBox(this, "Select a device", DECOR_CLOSE|DECOR_TITLE|DECOR_BORDER);
-		InterfaceWindow *ifwin = new InterfaceWindow(dlg, devs, "Select Playback Device", "Playback");
-		FXuint res = dlg->execute();
-		
-		if (res) {
-			// User selected an interface. Start capturing.
-			cout << "User selected " << ifwin->getSelectedInterface()->name << endl;
-			
-			live_capture = pcap_open_live(ifwin->getSelectedInterface()->name, 9999, 1/*promisc*/, 5/*read_timeout*/, errbuf);
-			if (live_capture) {
-				res = pcap_setnonblock(live_capture, 1, errbuf);
-				if (res >= 0) {
-				
-				}
-				else
-					cout << "Error setting nonblock: " << errbuf << endl;
+	// Prompt for the interface if one isn't set, or if called from the Play button click.
+	if (FXSELID(sel) == ID_START_BUTTON || pcap_if.length() == 0) {
+		// Popup window with list of interfaces in it.
+		pcap_findalldevs(&devs, errbuf);
+		if (devs) {
+			// Show the interface Window.
+			FXDialogBox *dlg = new FXDialogBox(this, "Select a device", DECOR_CLOSE|DECOR_TITLE|DECOR_BORDER);
+			InterfaceWindow *ifwin = new InterfaceWindow(dlg, devs, "Select Playback Device", "Playback");
+			FXuint res = dlg->execute();
+
+			if (res) {
+				// User selected an interface. Start capturing.
+				pcap_if = ifwin->getSelectedInterface()->name;
+				cout << "User selected " << pcap_if << endl;
+			}
+			else {
+				// User pushed cancel from the interface window.
+				pcap_if = "";
+			}
+
+			delete dlg;
+		}
+		else {
+			// report error.
+			cout << "Error finding devices " << errbuf << endl;
+		#ifdef WIN32
+			const char *privs = "Administrator";
+		#else
+			const char *privs = "root user";
+		#endif
+			FXString s;
+			s.format("There was an error trying to open the network device.\nThis most likely means that you do not have permission to open raw sockets.\nEnsure that you have %s privileges and try again.\n\nError: %s", privs, errbuf);
+			FXMessageBox::error(this, MBOX_OK, "Capture Error", "%s", s.text());
+		}
+
+		pcap_freealldevs(devs);
+	}
+
+	// Begin playback if an interface was selected.
+	if (pcap_if.length() > 0) {
+		live_capture = pcap_open_live(pcap_if.c_str(), 9999, 1/*promisc*/, 5/*read_timeout*/, errbuf);
+		if (live_capture) {
+			int res = pcap_setnonblock(live_capture, 1, errbuf);
+			if (res >= 0) {
+
+			}
+			else
+				cout << "Error setting nonblock: " << errbuf << endl;
 
 			#ifndef WIN32
 				send_handle = pcap_get_selectable_fd(live_capture);
 			#else
 				send_handle = 0;
 			#endif
-				if (send_handle >= 0) {
-					// Set the GUI and app state to
-					// the PLAYING state.
-					state = PLAYING;
-					startButton->disable();
-					stopButton->enable();
-					pauseButton->enable();
-					//rewindButton->disable();
-					playback_start_time = get_time();
+			if (send_handle >= 0) {
+				// Set the GUI and app state to
+				// the PLAYING state.
+				state = PLAYING;
+				startButton->disable();
+				stopButton->enable();
+				pauseButton->enable();
+				//rewindButton->disable();
+				playback_start_time = get_time();
 
-					// Start the playback thread.
-					run_thread = true;
-					packets_processed = 0;
-					elapsed_time = 0.0;
-					pthread_create(&thread, NULL, &thread_function, this);
-					// Start the periodic update timer.
-					// FOX 1.7 changes the timeouts to all be nanoseconds.
-					// Fox 1.6 had all timeouts as milliseconds.
-					int timeout_scalar = 1;
-					#if (FOX_MINOR >= 7)
-						timeout_scalar = 1000*1000;
-					#endif
-					getApp()->addTimeout(this, ID_CAPTURE_TIMEOUT, 1 * timeout_scalar  /*1ms*/);
-				}
-				else {
-					FXMessageBox::information(this, MBOX_OK, "Networking Error", "Unable to get a write handle for the playback.");
-				}
+				// Start the playback thread.
+				run_thread = true;
+				packets_processed = 0;
+				elapsed_time = 0.0;
+				pthread_create(&thread, NULL, &thread_function, this);
+				// Start the periodic update timer.
+				// FOX 1.7 changes the timeouts to all be nanoseconds.
+				// Fox 1.6 had all timeouts as milliseconds.
+				int timeout_scalar = 1;
+			#if (FOX_MINOR >= 7)
+				timeout_scalar = 1000*1000;
+			#endif
+				getApp()->addTimeout(this, ID_CAPTURE_TIMEOUT, 1 * timeout_scalar  /*1ms*/);
+			}
+			else {
+				FXMessageBox::information(this, MBOX_OK, "Networking Error", "Unable to get a write handle for the playback.");
 			}
 		}
-		else {
-			// User pushed cancel from the interface window.
-		}
-
-		delete dlg;
 	}
-	else {
-		// report error.
-		cout << "Error finding devices " << errbuf << endl;
-#ifdef WIN32
-		const char *privs = "Administrator";
-#else
-		const char *privs = "root user";
-#endif
-		FXString s;
-		s.format("There was an error trying to open the network device.\nThis most likely means that you do not have permission to open raw sockets.\nEnsure that you have %s privileges and try again.\n\nError: %s", privs, errbuf);
-		FXMessageBox::error(this, MBOX_OK, "Capture Error", "%s", s.text());
-	}
-	
-	pcap_freealldevs(devs);
 
 	return 1;
 }
@@ -548,6 +580,14 @@ long
 PlaybackWindow::onRewind(FXObject *, FXSelector, void*)
 {
 	/* What to do here ?? */
+
+	return 1;
+}
+
+long
+PlaybackWindow::onLoop(FXObject *, FXSelector, void*)
+{
+	loop_playback = !loop_playback;
 
 	return 1;
 }

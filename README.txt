@@ -21,7 +21,7 @@ To install the 3rd party dependencies on an Ubuntu system, GCC must first be
 installed. If it has not already been installed, run:
   sudo apt-get install build-essential
 Then run the following:
-  sudo apt-get install libfox-dev libpcap-dev cmake
+  sudo apt-get install libfox-1.6-dev libpcap0.8-dev cmake
 
 To build the software, run the following commands from inside the source
 distribution:

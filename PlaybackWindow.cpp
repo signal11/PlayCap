@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <pcap.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 #include "PlaybackWindow.h"
 #include "InterfaceWindow.h"
